@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - guide
+id: guide_page_save_action
+label: 'Save pages'
+type: guide_page
+plugin: entity:save_action:guide_page
+configuration: {  }

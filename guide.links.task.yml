@@ -1,0 +1,68 @@
+entity.guide.settings:
+  title: 'Settings'
+  route_name: entity.guide.settings
+  base_route: entity.guide.settings
+entity.guide.view:
+  title: 'View'
+  route_name: entity.guide.canonical
+  base_route: entity.guide.canonical
+entity.guide.edit_form:
+  title: 'Edit'
+  route_name: entity.guide.edit_form
+  base_route: entity.guide.canonical
+entity.guide.delete_form:
+  title: 'Delete'
+  route_name: entity.guide.delete_form
+  base_route: entity.guide.canonical
+  weight: 10
+entity.guide.collection:
+  title: 'Guides'
+  route_name: entity.guide.collection
+  base_route: system.admin_content
+  weight: 10
+
+entity.guide_page.settings:
+  title: 'Settings'
+  route_name: entity.guide_page.settings
+  base_route: entity.guide_page.settings
+entity.guide_page.view:
+  title: 'View'
+  route_name: entity.guide_page.canonical
+  base_route: entity.guide_page.canonical
+entity.guide_page.edit_form:
+  title: 'Edit'
+  route_name: entity.guide_page.edit_form
+  base_route: entity.guide_page.canonical
+entity.guide_page.delete_form:
+  title: 'Delete'
+  route_name: entity.guide_page.delete_form
+  base_route: entity.guide_page.canonical
+  weight: 10
+entity.guide_page.collection:
+  title: 'Pages'
+  route_name: entity.guide_page.collection
+  base_route: system.admin_content
+  weight: 10
+
+entity.guide_box.settings:
+  title: 'Settings'
+  route_name: entity.guide_box.settings
+  base_route: entity.guide_box.settings
+entity.guide_box.view:
+  title: 'View'
+  route_name: entity.guide_box.canonical
+  base_route: entity.guide_box.canonical
+entity.guide_box.edit_form:
+  title: 'Edit'
+  route_name: entity.guide_box.edit_form
+  base_route: entity.guide_box.canonical
+entity.guide_box.delete_form:
+  title: 'Delete'
+  route_name: entity.guide_box.delete_form
+  base_route: entity.guide_box.canonical
+  weight: 10
+entity.guide_box.collection:
+  title: 'Boxes'
+  route_name: entity.guide_box.collection
+  base_route: system.admin_content
+  weight: 10

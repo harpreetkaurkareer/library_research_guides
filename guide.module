@@ -1,0 +1,354 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Guide module.
+ */
+
+use Drupal\block\Entity\Block;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Render\Element;
+use Drupal\guide\Entity\Page;
+use Drupal\user\UserInterface;
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\views\ViewExecutable;
+
+
+
+/**
+ * Implements hook_theme().
+ */
+function guide_theme(): array {
+  return [
+    'guide' => ['render element' => 'elements'],
+    'guide_page' => ['render element' => 'elements'],
+    'guide_box' => ['render element' => 'elements']
+  ];
+}
+
+/**
+ * Prepares variables for guide templates.
+ *
+ * Default template: guide.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the guide information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_guide(array &$variables): void {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function guide_user_cancel($edit, UserInterface $account, $method): void {
+  switch ($method) {
+    case 'user_cancel_block_unpublish':
+      // Unpublish guides.
+      $storage = \Drupal::entityTypeManager()->getStorage('guide');
+      $guide_ids = $storage->getQuery()
+        ->condition('uid', $account->id())
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+      foreach ($storage->loadMultiple($guide_ids) as $guide) {
+        $guide->set('status', FALSE)->save();
+      }
+      break;
+
+    case 'user_cancel_reassign':
+      // Anonymize guides.
+      $storage = \Drupal::entityTypeManager()->getStorage('guide');
+      $guide_ids = $storage->getQuery()
+        ->condition('uid', $account->id())
+        ->accessCheck(FALSE)
+        ->execute();
+      foreach ($storage->loadMultiple($guide_ids) as $guide) {
+        $guide->setOwnerId(0)->save();
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_predelete() for user entities.
+ */
+function guide_user_predelete(UserInterface $account): void {
+  // Delete guides that belong to this account.
+  $storage = \Drupal::entityTypeManager()->getStorage('guide');
+  $guide_ids = $storage->getQuery()
+    ->condition('uid', $account->id())
+    ->accessCheck(FALSE)
+    ->execute();
+  $storage->delete(
+    $storage->loadMultiple($guide_ids)
+  );
+  // Delete old revisions.
+  $guide_ids = $storage->getQuery()
+    ->allRevisions()
+    ->condition('uid', $account->id())
+    ->accessCheck(FALSE)
+    ->execute();
+  foreach (array_keys($guide_ids) as $revision_id) {
+    $storage->deleteRevision($revision_id);
+  }
+}
+
+/**
+ * Prepares variables for page templates.
+ *
+ * Default template: guide-page.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the page information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_guide_page(array &$variables): void {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+ * Prepares variables for box templates.
+ *
+ * Default template: guide-box.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the box information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_guide_box(array &$variables): void {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+
+function guide_install_vocab_type(): void
+{
+  $vocabulary = Vocabulary::load('guide_type');
+
+  // If the vocabulary exists, create terms.
+  if ($vocabulary) {
+    $terms_to_create = array(
+      array(
+        'name' => 'General Purpose',
+        'vid' => $vocabulary->id(),
+        'description' => 'This vocabulary term is for General Purpose guides. You may want to rename this later on to be How-To or something similar.
+                Guides with this type will be used in all sorts of different areas.'
+      ),
+      array(
+        'name' => 'Subject',
+        'vid' => $vocabulary->id(),
+        'description' => 'This vocabulary term is for subjects. This term can pertain to guides that have a part of a specific subject.'
+      ),
+      array(
+        'name' => 'Topic',
+        'vid' => $vocabulary->id(),
+        'description' => 'This is for topics. This could revolve around many different major topics, such as Global News or Math Equations.
+                This vocabulary is meant to be used to complement Subject not as subjects themselves.'
+      ),
+      array(
+        'name' => 'Course',
+        'vid' => $vocabulary->id(),
+        'description' => 'This vocabulary term is for specific courses. This type means that the guide assigned with it is for a specific course or class.'
+      ),
+    );
+
+    // Check if terms already exist.
+    $existing_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'vid' => $vocabulary->id(),
+      'name' => array_column($terms_to_create, 'name'),
+    ]);
+
+    // Filter out terms that already exist.
+    $terms_to_install = array_filter($terms_to_create, function ($term_data) use ($existing_terms) {
+      foreach ($existing_terms as $existing_term) {
+        if ($existing_term->getName() === $term_data['name']) {
+          return false; // Term already exists, so skip installation
+        }
+      }
+      return true; // Term doesn't exist, so install it
+    });
+
+    // Save each term.
+    foreach ($terms_to_install as $term_data) {
+      $term = \Drupal\taxonomy\Entity\Term::create($term_data);
+      $term->save();
+    }
+  }
+}
+
+function guide_install_vocab_subject(): void
+{
+  $vocabulary = Vocabulary::load('subject');
+
+  // If the vocabulary exists, create terms.
+  if ($vocabulary) {
+    $terms_to_create = array(
+      array(
+        'name' => 'Computer Science',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Philosophy',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Psychology',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Math',
+        'vid' => $vocabulary->id(),
+      ),
+    );
+
+    $existing_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'vid' => $vocabulary->id(),
+      'name' => array_column($terms_to_create, 'name'),
+    ]);
+
+    // Filter out terms that already exist.
+    $terms_to_install = array_filter($terms_to_create, function ($term_data) use ($existing_terms) {
+      foreach ($existing_terms as $existing_term) {
+        if ($existing_term->getName() === $term_data['name']) {
+          return false; // Term already exists, so skip installation
+        }
+      }
+      return true; // Term doesn't exist, so install it
+    });
+
+    // Save each term.
+    foreach ($terms_to_install as $term_data) {
+      $term = \Drupal\taxonomy\Entity\Term::create($term_data);
+      $term->save();
+    }
+  }
+}
+
+function guide_install_vocab_guide_group(): void
+{
+  $vocabulary = Vocabulary::load('guide_group');
+
+  // If the vocabulary exists, create terms.
+  if ($vocabulary) {
+    $terms_to_create = array(
+      array(
+        'name' => 'Computers',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Video Games',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Nature',
+        'vid' => $vocabulary->id(),
+      ),
+      array(
+        'name' => 'Sports',
+        'vid' => $vocabulary->id(),
+      ),
+    );
+
+    $existing_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'vid' => $vocabulary->id(),
+      'name' => array_column($terms_to_create, 'name'),
+    ]);
+
+    // Filter out terms that already exist.
+    $terms_to_install = array_filter($terms_to_create, function ($term_data) use ($existing_terms) {
+      foreach ($existing_terms as $existing_term) {
+        if ($existing_term->getName() === $term_data['name']) {
+          return false; // Term already exists, so skip installation
+        }
+      }
+      return true; // Term doesn't exist, so install it
+    });
+
+    // Save each term.
+    foreach ($terms_to_install as $term_data) {
+      $term = \Drupal\taxonomy\Entity\Term::create($term_data);
+      $term->save();
+    }
+  }
+}
+
+function guide_remove_taxonomy(string $vocab): void
+{
+  $entityTypeManager = \Drupal::service('entity_type.manager');
+
+  $terms = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(array('vid' => $vocab));
+  foreach ($terms as $term) {
+    $term->delete();
+  }
+
+  // Delete the taxonomy vocabulary.
+  $vocabulary = $entityTypeManager->getStorage('taxonomy_vocabulary')->load($vocab);
+  $vocabulary?->delete();
+}
+function guide_uninstall(): void
+{
+  //guide_remove_taxonomy('guide_type');
+  //guide_remove_taxonomy('subject');
+  //guide_remove_taxonomy('guide_group');
+}
+
+/**
+ * Implements hook_page_attachments.
+ */
+function guide_page_attachments(array &$page) {
+  $page['#attached']['library'][] = 'guide/guide_count';
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function guide_block_access(Block $block, $operation, AccountInterface $account) {
+
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  if ($block->getPluginId() == 'views_block:librarian-block_1' && !in_array($route_name, ["entity.guide.canonical", "entity.block.edit_form"])) {
+    return AccessResult::forbidden()->addCacheableDependency($block);
+  }
+
+  if ($block->getPluginId() == 'views_block:guide_pages-block_1' && !in_array($route_name, ["entity.guide.canonical", "entity.block.edit_form"])) {
+    return AccessResult::forbidden()->addCacheableDependency($block);
+  }
+
+  if ($block->getPluginId() == 'views_block:guide_pages-block_2' && !in_array($route_name, ["entity.guide_page.canonical", "entity.block.edit_form"])) {
+    return AccessResult::forbidden()->addCacheableDependency($block);
+  }
+
+  return AccessResult::neutral();
+}
+
+function guide_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
+  if ($view->id() == 'guide_pages' && $display_id == 'block_2' )  {
+    $route_match = \Drupal::routeMatch();
+    $route_name = $route_match->getRouteName();
+
+    if ($route_name == 'entity.guide_page.canonical') {
+      $parameters = $route_match->getParameters()->all();
+      if (isset($parameters['guide_page'])) {
+        $args[0] = $parameters['guide_page']->get('field_guide')->target_id;
+      }
+    }
+  }
+}
+

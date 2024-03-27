@@ -1,0 +1,8 @@
+uuid: d55eedf3-9752-467c-ae9e-56efb6e912fd
+langcode: en
+status: true
+dependencies: {  }
+name: 'Guide group'
+vid: guide_group
+description: ''
+weight: 0

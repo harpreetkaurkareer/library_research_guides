@@ -1,0 +1,48 @@
+entity.guide.settings:
+  path: 'admin/structure/guide'
+  defaults:
+    _form: '\Drupal\guide\Form\GuideSettingsForm'
+    _title: 'Guide'
+  requirements:
+    _permission: 'administer guide'
+
+entity.guide_page.settings:
+  path: 'admin/structure/guide-page'
+  defaults:
+    _form: '\Drupal\guide\Form\PageSettingsForm'
+    _title: 'Page'
+  requirements:
+    _permission: 'administer guide_page'
+
+entity.guide_box.settings:
+  path: 'admin/structure/guide-box'
+  defaults:
+    _form: '\Drupal\guide\Form\BoxSettingsForm'
+    _title: 'Box'
+  requirements:
+    _permission: 'administer guide_box'
+
+guide.test:
+  path: '/guide/test'
+  defaults:
+    _title: 'Test'
+    _controller: '\Drupal\guide\Controller\GuideController'
+  requirements:
+    _permission: 'access content'
+
+guide.page.autocomplete.form:
+  path: "/admin/pages/copy/existing"
+  defaults:
+    _form: '\Drupal\guide\Form\CopyExistingPage'
+    _title: "Copy from existing page"
+  requirements:
+    _permission: "access content"
+
+
+guides.autocomplete.pages:
+  path: "/admin/page/autocomplete"
+  defaults:
+    _controller: '\Drupal\guide\Controller\PagesAutocomplete::handleAutocomplete'
+    _format: json
+  requirements:
+    _permission: "access content"

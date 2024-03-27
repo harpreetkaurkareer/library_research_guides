@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Guide module.
+ */
+
+
+
+/**
+* Implements hook_install().
+*/
+function guide_install() {
+  $theme = \Drupal::config('system.theme')->get('default');
+  $entityTypeManager = \Drupal::service('entity_type.manager');
+
+  // Create and place the 'Guide pages' block in 'sidebar' region.
+  $view_id = 'guide_pages';
+  $display_id = 'block_1';
+  $plugin_id = 'views_block:' . $view_id . '-' . $display_id;
+  $pages_block = $entityTypeManager->getStorage('block')->create(['id' => "{$theme}_views_block__guide_pages_block_1", 'plugin' => $plugin_id, 'theme' => $theme, 'region' => 'sidebar']);
+  // $visibility = $pages_block->getVisibility();
+  // $visibility['request_path']['pages'] = '/guide/*';
+  // $pages_block->setVisibilityConfig('request_path', $visibility['request_path']);
+  $pages_block->save();
+
+  $view_id = 'guide_pages';
+  $display_id = 'block_2';
+  $plugin_id = 'views_block:' . $view_id . '-' . $display_id;
+  $pages_block = $entityTypeManager->getStorage('block')->create(['id' => "{$theme}_views_block__guide_pages_block_2", 'plugin' => $plugin_id, 'theme' => $theme, 'region' => 'sidebar']);
+  $pages_block->save();
+
+  // Create and place the 'Librarian' block in 'sidebar' region.
+  $view_id = 'librarian';
+  $display_id = 'block_1';
+  $plugin_id = 'views_block:' . $view_id . '-' . $display_id;
+  $librarian_block = $entityTypeManager->getStorage('block')->create(['id' => "{$theme}_views_block__librarian_block_1", 'plugin' => $plugin_id, 'theme' => $theme, 'region' => 'sidebar']);
+
+  $librarian_block->save();
+  guide_install_vocab_type();
+  guide_install_vocab_guide_group();
+  guide_install_vocab_subject();
+
+
+}

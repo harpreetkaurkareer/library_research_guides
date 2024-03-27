@@ -1,0 +1,35 @@
+entity.guide.settings:
+  title: 'Guide'
+  description: 'Configure a Guide entity type.'
+  route_name:  entity.guide.settings
+  parent: system.admin_structure
+
+entity.guide.collection:
+  title: 'Guides'
+  description: 'List of guides.'
+  route_name: entity.guide.collection
+  parent: system.admin_content
+
+entity.guide_page.settings:
+  title: 'Page'
+  description: 'Configure a Page entity type.'
+  route_name:  entity.guide_page.settings
+  parent: system.admin_structure
+
+entity.guide_page.collection:
+  title: 'Pages'
+  description: 'List of pages.'
+  route_name: entity.guide_page.collection
+  parent: system.admin_content
+
+entity.guide_box.settings:
+  title: 'Box'
+  description: 'Configure a Box entity type.'
+  route_name:  entity.guide_box.settings
+  parent: system.admin_structure
+
+entity.guide_box.collection:
+  title: 'Boxes'
+  description: 'List of boxes.'
+  route_name: entity.guide_box.collection
+  parent: system.admin_content

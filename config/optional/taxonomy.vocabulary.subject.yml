@@ -1,0 +1,10 @@
+uuid: c8331d8e-8d60-46b9-962b-e819fc4fa12a
+langcode: en
+status: true
+dependencies:
+  module:
+    - guide
+name: Subject
+vid: subject
+description: ''
+weight: 0

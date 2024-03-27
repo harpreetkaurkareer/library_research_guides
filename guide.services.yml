@@ -1,0 +1,10 @@
+services:
+  guide.views_data:
+    class: Drupal\guide\GuideViewsData
+    arguments: ['@module_handler']
+    tags:
+      - { name: views.views_data }
+  guide.twig.CustomFunctions:
+    class: Drupal\guide\TwigExtension\CustomFunctions
+    tags:
+      - { name: twig.extension }

@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - guide
+id: guide_box_save_action
+label: 'Save boxes'
+type: guide_box
+plugin: entity:save_action:guide_box
+configuration: {  }

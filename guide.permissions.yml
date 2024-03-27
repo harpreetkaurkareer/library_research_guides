@@ -1,0 +1,35 @@
+administer guide:
+  title: 'Administer guides'
+  restrict access: true
+view guide:
+  title: 'View guide'
+edit guide:
+  title: 'Edit guide'
+delete guide:
+  title: 'Delete guide'
+create guide:
+  title: 'Create guide'
+
+administer guide_page:
+  title: 'Administer pages'
+  restrict access: true
+view guide_page:
+  title: 'View page'
+edit guide_page:
+  title: 'Edit page'
+delete guide_page:
+  title: 'Delete page'
+create guide_page:
+  title: 'Create page'
+
+administer guide_box:
+  title: 'Administer boxes'
+  restrict access: true
+view guide_box:
+  title: 'View box'
+edit guide_box:
+  title: 'Edit box'
+delete guide_box:
+  title: 'Delete box'
+create guide_box:
+  title: 'Create box'

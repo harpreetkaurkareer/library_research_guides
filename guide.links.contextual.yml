@@ -1,0 +1,32 @@
+entity.guide.edit_form:
+  route_name: entity.guide.edit_form
+  group: guide
+  title: 'Edit'
+
+entity.guide.delete_form:
+  route_name: entity.guide.delete_form
+  group: guide
+  title: 'Delete'
+  weight: 10
+
+entity.guide_page.edit_form:
+  route_name: entity.guide_page.edit_form
+  group: guide_page
+  title: 'Edit'
+
+entity.guide_page.delete_form:
+  route_name: entity.guide_page.delete_form
+  group: guide_page
+  title: 'Delete'
+  weight: 10
+
+entity.guide_box.edit_form:
+  route_name: entity.guide_box.edit_form
+  group: guide_box
+  title: 'Edit'
+
+entity.guide_box.delete_form:
+  route_name: entity.guide_box.delete_form
+  group: guide_box
+  title: 'Delete'
+  weight: 10

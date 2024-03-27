@@ -1,0 +1,16 @@
+name: 'Guide'
+type: module
+description: 'Guide module'
+package: Custom
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:views
+  - drupal:taxonomy
+  - inline_entity_form:inline_entity_form
+  - drupal:layout_builder
+  - drupal:views
+libraries:
+  - guide/guide_count
+config/install:
+  -guide
+

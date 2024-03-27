@@ -1,0 +1,17 @@
+guide.add_form:
+  title: 'Add guide'
+  route_name: entity.guide.add_form
+  appears_on:
+    - entity.guide.collection
+
+guide_page.add_form:
+  title: 'Add page'
+  route_name: entity.guide_page.add_form
+  appears_on:
+    - entity.guide_page.collection
+
+guide_box.add_form:
+  title: 'Add box'
+  route_name: entity.guide_box.add_form
+  appears_on:
+    - entity.guide_box.collection

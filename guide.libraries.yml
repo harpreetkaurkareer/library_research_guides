@@ -1,0 +1,6 @@
+guide_count:
+  js:
+    js/guide.js: {}
+  css:
+    component:
+      css/guide.css: {}

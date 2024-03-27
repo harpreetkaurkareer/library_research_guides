@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - guide
+id: guide_delete_action
+label: 'Delete guides'
+type: guide
+plugin: entity:delete_action:guide
+configuration: {  }

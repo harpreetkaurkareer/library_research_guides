@@ -1,0 +1,10 @@
+uuid: 0b5ceb33-e3f8-486a-926d-93922c6a47d4
+langcode: en
+status: true
+dependencies:
+  module:
+    - guide
+name: 'Guide type'
+vid: guide_type
+description: ''
+weight: 0

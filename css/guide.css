@@ -1,0 +1,61 @@
+.guides-anonymous .guides-menu {
+  list-style-type: none;
+  margin-inline-start: 0;
+}
+
+.guides-anonymous .view-content .item-list {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #F3F4F8;
+  margin-bottom: 15px;
+}
+
+.guides-anonymous .view-content .item-list .group-title {
+  margin-bottom: 5px;
+  color: #8c2004;
+}
+
+.guides-anonymous .view-content .item-list ul li .views-field .field-content a {
+  display: block;
+  text-align: left;
+  text-decoration: none;
+  color: #8c2004;
+  border-radius: 5px;
+  background: #F3F4F8;
+  padding: 10px 0px 13px 10px;
+  margin-bottom: 10px;
+}
+
+.guides-anonymous .view-content .item-list ul {
+  list-style-type: none;
+  margin-inline-start: 0;
+}
+
+.guides-anonymous .guides-menu a{
+  text-decoration: none;
+  color: #000000;
+}
+.guides-anonymous .guides-menu .guides-menu__item {
+  display: inline-block;
+  padding-right: 16px;
+}
+.guides-anonymous .guides-menu .guides-menu__item.active a{
+  color: #FFFFFF;
+  background-color: #8c2004;
+  padding: 15px 25px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.guides-anonymous .view-content .views-row .field-content a {
+  display: block;
+  text-align: left;
+  text-decoration: none;
+  color: #8c2004;
+  border-radius: 5px;
+  background: #F3F4F8;
+  padding: 10px 0px 13px 10px;
+  margin-bottom: 10px;
+}
